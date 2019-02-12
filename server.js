@@ -1,4 +1,4 @@
-/*********** SETUP WEB SERVER ************/
+/*********** WEB SERVER ************/
 var express = require('express');
 var app = express();
 
@@ -9,5 +9,19 @@ if (port == null || port == "") { // if on prod server, then run on the required
 var server = app.listen(port);
 
 app.use(express.static('public'));
-
 console.log("...Node server started...");
+
+/*********** SOCKET ************/
+
+var socket = require('socket.io');
+var io = socket(server);
+
+io.sockets.on('connection', newConnection)
+
+function newConnection(socket) {
+    console.log("connected to " + socket.id);
+    
+    socket.on('mouseUpdate', function(data) { // whenever we get a mouse update packet
+        socket.broadcast.emit('otherMouse', data); // send the mouse data to all other sockets
+    })
+}
