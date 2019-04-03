@@ -16,12 +16,17 @@ console.log("...Node server started...");
 var socket = require('socket.io');
 var io = socket(server);
 
-io.sockets.on('connection', newConnection)
+io.sockets.on('connection', newConnection);
 
+// called when we get a new connection
 function newConnection(socket) {
     console.log("connected to " + socket.id);
     
     socket.on('mouseUpdate', function(data) { // whenever we get a mouse update packet
         socket.broadcast.emit('otherMouse', data); // send the mouse data to all other sockets
-    })
+    });
+    
+    socket.on('clearScreen', function() { // whenever we get a mouse update packet
+        socket.broadcast.emit('clearScreen'); // send the mouse data to all other sockets
+    });
 }
